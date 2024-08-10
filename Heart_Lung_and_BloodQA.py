@@ -5,7 +5,8 @@ import ast
 import openai
 from openai.embeddings_utils import cosine_similarity
 
-openai.api_key =  st.secrets["mykey"]
+# Initialize OpenAI API key
+openai.api_key = 'your-openai-api-key'
 
 # Load the dataset
 df = pd.read_csv("qa_dataset_with_embeddings.csv")
@@ -42,22 +43,28 @@ def find_best_answer(user_question):
 # Streamlit interface
 st.title("Heart, Lung, and Blood Health QA")
 
+# Manage session state for input field and other states
+if 'user_question' not in st.session_state:
+    st.session_state.user_question = ""
+
 # Text input for user's question
-user_question = st.text_input("Ask your health-related question:")
+st.session_state.user_question = st.text_input("Ask your health-related question:", value=st.session_state.user_question)
 
 # Button to trigger the answer search
 if st.button("Find Answer"):
-    if user_question:
+    if st.session_state.user_question:
         # Find the best answer based on the user's question
-        answer, similarity = find_best_answer(user_question)
+        answer, similarity = find_best_answer(st.session_state.user_question)
         st.write(f"**Answer:** {answer}")
         st.write(f"**Similarity Score:** {similarity:.2f}")
     else:
         st.write("Please enter a question.")
 
-# Optional: Add a "Clear" button to reset the input field
-if st.button("Clear"):
-    user_question = ""
+# Clear button to reset input and session state
+clear_button_key = "clear_button"
+clear_button = st.button("Clear", key=clear_button_key)
+if clear_button:
+    st.session_state.user_question = ""
     st.experimental_rerun()
 
 # Optional: Add a section for common FAQs
