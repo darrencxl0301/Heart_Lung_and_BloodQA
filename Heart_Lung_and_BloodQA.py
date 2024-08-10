@@ -32,7 +32,7 @@ def find_best_answer(user_question):
     max_similarity = df['Similarity'].max()
 
     # Set a similarity threshold to determine if a question is relevant enough
-    similarity_threshold = 0.6  # You can adjust this value
+    similarity_threshold = 0.6  # Adjust this value as needed
 
     if max_similarity >= similarity_threshold:
         best_answer = df.loc[most_similar_index, 'Answer']
@@ -57,6 +57,13 @@ if st.button("Find Answer"):
         answer, similarity = find_best_answer(st.session_state.user_question)
         st.write(f"**Answer:** {answer}")
         st.write(f"**Similarity Score:** {similarity:.2f}")
+
+        # Rating system
+        rating = st.radio("Was this answer helpful?", ('Yes', 'No'))
+        if rating == 'Yes':
+            st.write("Thank you for your feedback!")
+        else:
+            st.write("Sorry to hear that. We'll strive to improve.")
     else:
         st.write("Please enter a question.")
 
