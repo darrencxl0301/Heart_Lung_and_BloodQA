@@ -8,18 +8,15 @@ from openai.embeddings_utils import cosine_similarity
 openai.api_key =  st.secrets["mykey"]
 
 # Load the dataset
-df = pd.read_csv("Heart_Lung_and_BloodQA.csv")
+df = pd.read_csv("qa_dataset_with_embeddings.csv")
 
-# Preprocess the data (remove punctuation, lowercase, etc.)
-df['Question'] = df['Question'].astype(str).str.lower().str.replace('[^\w\s]', '', regex=True)
-
-# Function to get embedding
-def get_embedding(text, model="text-embedding-ada-002"):
-   return openai.Embedding.create(input = [text], model=model)['data'][0]['embedding']
-
-df['Question_Embedding'] = df['Question'].apply(get_embedding)
-
+# Convert the string embeddings back to lists (if needed)
 df['Question_Embedding'] = df['Question_Embedding'].apply(ast.literal_eval)
+
+# Function to get embedding for a user's question
+def get_embedding(text, model="text-embedding-ada-002"):
+    response = openai.Embedding.create(input=[text], model=model)
+    return response['data'][0]['embedding']
 
 # Function to find the best answer
 def find_best_answer(user_question):
