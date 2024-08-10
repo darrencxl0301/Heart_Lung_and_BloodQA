@@ -65,7 +65,6 @@ clear_button_key = "clear_button"
 clear_button = st.button("Clear", key=clear_button_key)
 if clear_button:
     st.session_state.user_question = ""
-    st.experimental_rerun()
 
 # Optional: Add a section for common FAQs
 st.subheader("Frequently Asked Questions")
