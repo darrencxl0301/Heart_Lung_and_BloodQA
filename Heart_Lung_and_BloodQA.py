@@ -58,11 +58,11 @@ if st.button("Find Answer"):
         st.write(f"**Answer:** {answer}")
         st.write(f"**Similarity Score:** {similarity:.2f}")
 
-        # Rating system
-        rating = st.radio("Was this answer helpful?", ('Yes', 'No'))
+        # Rating system with initial unselected state
+        rating = st.radio("Was this answer helpful?", ('Select an option', 'Yes', 'No'), index=0)
         if rating == 'Yes':
             st.write("Thank you for your feedback!")
-        else:
+        elif rating == 'No':
             st.write("Sorry to hear that. We'll strive to improve.")
     else:
         st.write("Please enter a question.")
