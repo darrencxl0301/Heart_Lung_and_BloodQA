@@ -47,6 +47,9 @@ st.title("Heart, Lung, and Blood Health QA")
 if 'user_question' not in st.session_state:
     st.session_state.user_question = ""
 
+if 'rating_feedback' not in st.session_state:
+    st.session_state.rating_feedback = ""
+
 # Text input for user's question
 st.session_state.user_question = st.text_input("Ask your health-related question:", value=st.session_state.user_question)
 
@@ -55,23 +58,33 @@ if st.button("Find Answer"):
     if st.session_state.user_question:
         # Find the best answer based on the user's question
         answer, similarity = find_best_answer(st.session_state.user_question)
+        st.session_state.answer = answer
+        st.session_state.similarity = similarity
+        st.session_state.rating_feedback = ""  # Reset rating feedback when a new question is asked
+
         st.write(f"**Answer:** {answer}")
         st.write(f"**Similarity Score:** {similarity:.2f}")
 
         # Rating system with initial unselected state
         rating = st.radio("Was this answer helpful?", ('Select an option', 'Yes', 'No'), index=0)
         if rating == 'Yes':
-            st.write("Thank you for your feedback!")
+            st.session_state.rating_feedback = "Thank you for your feedback!"
         elif rating == 'No':
-            st.write("Sorry to hear that. We'll strive to improve.")
+            st.session_state.rating_feedback = "Sorry to hear that. We'll strive to improve."
     else:
-        st.write("Please enter a question.")
+        st.session_state.answer = None
+
+# Display the feedback without causing a rerun
+if st.session_state.rating_feedback:
+    st.markdown(f"**{st.session_state.rating_feedback}**")
 
 # Clear button to reset input and session state
 clear_button_key = "clear_button"
 clear_button = st.button("Clear", key=clear_button_key)
 if clear_button:
     st.session_state.user_question = ""
+    st.session_state.answer = None
+    st.session_state.rating_feedback = ""
 
 # Optional: Add a section for common FAQs
 st.subheader("Frequently Asked Questions")
